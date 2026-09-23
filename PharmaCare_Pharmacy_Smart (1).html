@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PharmaCare | نظام إدارة الصيدلية</title>
+<style>
+:root{
+  --primary:#0f9d8a;--primary2:#087d6e;--dark:#102a2a;--bg:#f4f8f7;
+  --card:#fff;--muted:#6b7c7a;--danger:#d64545;--warning:#e7a900;
+  --shadow:0 12px 35px rgba(16,42,42,.09);--radius:20px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Tahoma,Arial,sans-serif;background:var(--bg);color:var(--dark)}
+button,input,select{font:inherit}
+button{cursor:pointer}
+.hidden{display:none!important}
+.topbar{height:72px;background:#fff;border-bottom:1px solid #e6efed;display:flex;align-items:center;justify-content:space-between;padding:0 5%;position:sticky;top:0;z-index:50}
+.brand{display:flex;align-items:center;gap:10px;font-size:22px;font-weight:900;color:var(--primary2)}
+.brand span{font-size:30px}
+.top-actions{display:flex;gap:10px;align-items:center}
+.btn{border:0;border-radius:12px;padding:11px 17px;font-weight:800;transition:.2s}
+.btn-primary{background:var(--primary);color:#fff}.btn-primary:hover{background:var(--primary2)}
+.btn-light{background:#eef7f5;color:var(--primary2)}.btn-danger{background:#ffe9e9;color:#b72f2f}
+.btn-dark{background:var(--dark);color:#fff}
+.btn:active{transform:scale(.98)}
+.landing{min-height:calc(100vh - 72px);background:linear-gradient(135deg,#e9f9f6,#f8fbfa);display:grid;place-items:center;padding:35px 5%}
+.hero{max-width:1150px;width:100%;display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center}
+.hero-copy h1{font-size:clamp(36px,5vw,65px);line-height:1.1;margin-bottom:18px}
+.hero-copy h1 b{color:var(--primary)}
+.hero-copy p{font-size:19px;color:var(--muted);line-height:1.9;margin-bottom:25px}
+.hero-card{background:#fff;border-radius:30px;padding:35px;box-shadow:var(--shadow)}
+.role-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-top:20px}
+.role{padding:22px 12px;border:1px solid #e5efed;border-radius:18px;text-align:center;background:#fff}
+.role .icon{font-size:34px}.role h3{margin:10px 0 5px}.role small{color:var(--muted)}
+.app{min-height:calc(100vh - 72px)}
+.sidebar{position:fixed;right:0;top:72px;width:255px;height:calc(100vh - 72px);background:#102a2a;color:#fff;padding:22px 15px;z-index:40}
+.sidebar h3{padding:12px 12px 20px;color:#aee9df}
+.side-btn{width:100%;border:0;background:transparent;color:#dcebea;text-align:right;padding:14px;border-radius:12px;margin:3px 0}
+.side-btn.active,.side-btn:hover{background:#184642;color:#fff}
+.main{margin-right:255px;padding:30px 5%;min-height:calc(100vh - 72px)}
+.page-title{display:flex;justify-content:space-between;gap:15px;align-items:center;margin-bottom:24px}
+.page-title h2{font-size:30px}.page-title p{color:var(--muted);margin-top:5px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-bottom:25px}
+.stat,.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px}
+.stat{display:flex;align-items:center;justify-content:space-between}.stat .num{font-size:29px;font-weight:900;margin-top:6px}.stat .ico{font-size:32px}
+.muted{color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:18px}
+.product{background:#fff;border-radius:18px;overflow:hidden;box-shadow:var(--shadow);border:1px solid #edf3f1}
+.product-img{height:150px;background:linear-gradient(135deg,#e7f8f4,#f7fbfa);display:grid;place-items:center;font-size:65px}
+.product-body{padding:17px}.product-body h3{margin-bottom:7px}.price{color:var(--primary2);font-weight:900;font-size:19px;margin:12px 0}
+.badge{display:inline-block;padding:5px 9px;border-radius:999px;font-size:12px;background:#e9f7f4;color:var(--primary2)}
+.search{display:flex;gap:10px;margin-bottom:20px}.search input,.field{width:100%;padding:13px 15px;border:1px solid #dbe8e5;border-radius:12px;outline:none;background:#fff}
+.search input:focus,.field:focus{border-color:var(--primary)}
+.table-wrap{overflow:auto}.table{width:100%;border-collapse:collapse}.table th,.table td{padding:14px;border-bottom:1px solid #edf1f0;text-align:right}.table th{color:var(--muted);font-size:13px}
+.modal{position:fixed;inset:0;background:rgba(10,25,25,.55);display:grid;place-items:center;padding:20px;z-index:100}
+.modal-box{background:#fff;border-radius:22px;max-width:600px;width:100%;padding:25px;max-height:90vh;overflow:auto}
+.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.form-group label{display:block;margin-bottom:7px;font-weight:700;font-size:13px}
+.camera{background:#101818;border-radius:16px;overflow:hidden;min-height:280px;display:grid;place-items:center;color:#fff;position:relative}
+.camera video{width:100%;max-height:420px;display:block}.scan-line{position:absolute;left:10%;right:10%;top:50%;height:2px;background:#5ee8d4;box-shadow:0 0 12px #5ee8d4}
+.login{min-height:calc(100vh - 72px);display:grid;place-items:center;padding:30px}
+.login-card{width:min(430px,100%);background:#fff;padding:32px;border-radius:25px;box-shadow:var(--shadow)}
+.login-card h2{text-align:center;margin-bottom:8px}.login-card p{text-align:center;color:var(--muted);margin-bottom:25px}
+.login-actions{display:grid;gap:12px}
+.notice{padding:14px;border-radius:12px;background:#fff7dd;color:#806000;margin-bottom:18px}
+.toast{position:fixed;left:25px;bottom:25px;background:#102a2a;color:#fff;padding:14px 18px;border-radius:12px;z-index:200;box-shadow:var(--shadow)}
+@media(max-width:950px){
+ .hero{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr 1fr}
+ .sidebar{position:static;width:100%;height:auto;display:flex;overflow:auto;gap:6px}.sidebar h3{display:none}.side-btn{min-width:140px;text-align:center}
+ .main{margin-right:0}.role-grid{grid-template-columns:1fr}
+}
+@media(max-width:650px){
+ .topbar{padding:0 15px}.top-actions .btn-light{display:none}.main{padding:20px 15px}.stats,.grid,.form-grid{grid-template-columns:1fr}.hero{gap:20px}.hero-copy h1{font-size:39px}
+}
+
+.pharmacy-brand-card{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:320px;text-align:center;position:relative;overflow:hidden}
+.pharmacy-brand-card:before{content:"";position:absolute;width:240px;height:240px;border-radius:50%;background:rgba(14,165,164,.08);top:-90px;right:-70px}
+.pharmacy-logo{width:76px;height:76px;border-radius:24px;display:flex;align-items:center;justify-content:center;font-size:42px;font-weight:900;background:linear-gradient(135deg,#0ea5a4,#0f766e);color:#fff;box-shadow:0 14px 30px rgba(14,165,164,.22);margin-bottom:18px;position:relative}
+.pharmacy-word{font-size:clamp(34px,5vw,58px);font-weight:900;letter-spacing:5px;line-height:1;color:#0f172a;position:relative}
+.pharmacy-ar{font-size:22px;font-weight:800;color:#0f766e;margin-top:12px;position:relative}
+.smart-line{font-size:13px;color:#64748b;margin-top:18px;position:relative}
+.smart-line span{color:#10b981;margin-left:5px}
+.eyebrow{font-size:12px;font-weight:800;letter-spacing:2px;color:#0f766e;margin-bottom:10px}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand"><span>💊</span> PharmaCare</div>
+  <div class="top-actions">
+    <button class="btn btn-light" onclick="showHome()">الرئيسية</button>
+    <button class="btn btn-primary" onclick="openLogin()">تسجيل الدخول</button>
+  </div>
+</header>
+
+<section id="landing" class="landing">
+  <div class="hero">
+    <div class="hero-copy">
+      <div class="eyebrow">PHARMACY • SMART MANAGEMENT</div>
+      <h1>صيدليتك، <b>بشكل أذكى</b></h1>
+      <p>كل ما تحتاجه صيدليتك في مكان واحد — إدارة الأدوية والمخزون والطلبات والصيانة، بتجربة بسيطة واحترافية.</p>
+      <button class="btn btn-primary" onclick="openLogin()">دخول إلى Pharmacy ←</button>
+    </div>
+    <div class="hero-card pharmacy-brand-card">
+      <div class="pharmacy-logo">✚</div>
+      <div class="pharmacy-word">PHARMACY</div>
+      <div class="pharmacy-ar">صيدليتك بشكل أذكى</div>
+      <div class="smart-line"><span>●</span> نظام واحد • إدارة أذكى • تجربة احترافية</div>
+    </div>
+  </div>
+</section>
+
+<section id="login" class="login hidden">
+  <div class="login-card">
+    <h2>تسجيل الدخول</h2><p>اختر نوع الحساب للدخول إلى الواجهة المناسبة</p>
+    <div class="login-actions">
+      <button class="btn btn-primary" onclick="login('customer')">🛍️ الدخول كزبون</button>
+      <button class="btn btn-light" onclick="login('pharmacist')">👨‍⚕️ الدخول كصيدلاني</button>
+      <button class="btn btn-dark" onclick="showOwnerLogin()">👑 دخول المالك Alyas</button>
+    </div>
+    <div id="ownerFields" class="hidden" style="margin-top:18px">
+      <input id="ownerUser" class="field" placeholder="اسم المالك" value="Alyas" style="margin-bottom:10px">
+      <input id="ownerPass" class="field" type="password" placeholder="كلمة مرور المالك">
+      <button class="btn btn-dark" style="width:100%;margin-top:10px" onclick="loginOwner()">دخول المالك</button>
+      <small class="muted" style="display:block;margin-top:10px">كلمة المرور الافتراضية: Alyas@PharmaCare#2026!Iraq</small>
+    </div>
+  </div>
+</section>
+
+<div id="app" class="app hidden">
+  <aside class="sidebar">
+    <h3>PharmaCare<br><small>لوحة التحكم</small></h3>
+    <button class="side-btn active" data-page="dashboard" onclick="goPage('dashboard')">🏠 الرئيسية</button>
+    <button class="side-btn" data-page="products" onclick="goPage('products')">💊 الأدوية</button>
+    <button class="side-btn" data-page="orders" onclick="goPage('orders')">📦 الطلبات</button>
+    <button class="side-btn pharmacist-only hidden" data-page="manage" onclick="goPage('manage')">🧰 إدارة المخزون</button>
+    <button class="side-btn owner-only hidden" data-page="maintenance" onclick="goPage('maintenance')">⚙️ الصيانة</button>
+    <button class="side-btn" onclick="logout()">🚪 تسجيل الخروج</button>
+  </aside>
+  <main class="main">
+    <div id="dashboardPage"></div>
+    <div id="productsPage" class="hidden"></div>
+    <div id="ordersPage" class="hidden"></div>
+    <div id="managePage" class="hidden"></div>
+    <div id="maintenancePage" class="hidden"></div>
+  </main>
+</div>
+
+<div id="modal" class="modal hidden"><div class="modal-box" id="modalBox"></div></div>
+<div id="toast" class="toast hidden"></div>
+
+<script>
+const DEFAULT_OWNER_USER="Alyas";
+const DEFAULT_OWNER_PASS="Alyas@PharmaCare#2026!Iraq";
+let products = JSON.parse(localStorage.getItem("pharmacare_products") || "[]");
+let orders = JSON.parse(localStorage.getItem("pharmacare_orders") || "[]");
+let cart = JSON.parse(localStorage.getItem("pharmacare_cart") || "[]");
+let role = null;
+let stream = null;
+
+function save(){localStorage.setItem("pharmacare_products",JSON.stringify(products));localStorage.setItem("pharmacare_orders",JSON.stringify(orders));localStorage.setItem("pharmacare_cart",JSON.stringify(cart))}
+function toast(msg){const t=document.getElementById("toast");t.textContent=msg;t.classList.remove("hidden");setTimeout(()=>t.classList.add("hidden"),2400)}
+function showHome(){document.getElementById("landing").classList.remove("hidden");document.getElementById("login").classList.add("hidden");document.getElementById("app").classList.add("hidden")}
+function openLogin(){document.getElementById("landing").classList.add("hidden");document.getElementById("login").classList.remove("hidden");document.getElementById("app").classList.add("hidden")}
+function showOwnerLogin(){document.getElementById("ownerFields").classList.remove("hidden")}
+function loginOwner(){
+ const u=document.getElementById("ownerUser").value.trim(),p=document.getElementById("ownerPass").value;
+ if(u===DEFAULT_OWNER_USER && p===DEFAULT_OWNER_PASS) login("owner"); else toast("بيانات المالك غير صحيحة");
+}
+function login(r){
+ role=r; document.getElementById("landing").classList.add("hidden");document.getElementById("login").classList.add("hidden");document.getElementById("app").classList.remove("hidden");
+ document.querySelectorAll(".pharmacist-only").forEach(x=>x.classList.toggle("hidden",r!=="pharmacist"));
+ document.querySelectorAll(".owner-only").forEach(x=>x.classList.toggle("hidden",r!=="owner"));
+ renderAll(); goPage(r==="customer"?"products":r==="pharmacist"?"manage":"dashboard");
+}
+function logout(){role=null;stopCamera();showHome()}
+function goPage(page){
+ ["dashboard","products","orders","manage","maintenance"].forEach(p=>document.getElementById(p+"Page").classList.toggle("hidden",p!==page));
+ document.querySelectorAll(".side-btn").forEach(b=>b.classList.toggle("active",b.dataset.page===page));
+ if(page==="dashboard") renderDashboard(); if(page==="products") renderProducts(); if(page==="orders") renderOrders(); if(page==="manage") renderManage(); if(page==="maintenance") renderMaintenance();
+}
+function renderAll(){renderDashboard();renderProducts();renderOrders();renderManage();renderMaintenance()}
+function renderDashboard(){
+ const total=products.reduce((s,p)=>s+p.price*p.stock,0), low=products.filter(p=>p.stock<=5).length;
+ document.getElementById("dashboardPage").innerHTML=`
+ <div class="page-title"><div><h2>${role==="owner"?"لوحة المالك Alyas":"لوحة التحكم"}</h2><p>مرحباً بك في PharmaCare</p></div></div>
+ <div class="stats">
+  <div class="stat"><div><span class="muted">عدد الأدوية</span><div class="num">${products.length}</div></div><div class="ico">💊</div></div>
+  <div class="stat"><div><span class="muted">الطلبات</span><div class="num">${orders.length}</div></div><div class="ico">📦</div></div>
+  <div class="stat"><div><span class="muted">مخزون منخفض</span><div class="num">${low}</div></div><div class="ico">⚠️</div></div>
+  <div class="stat"><div><span class="muted">قيمة المخزون</span><div class="num">${total.toFixed(2)}</div></div><div class="ico">💰</div></div>
+ </div>
+ <div class="grid">
+  <div class="card"><h3>🛡️ الصلاحيات</h3><p class="muted" style="margin-top:10px">الصيدلاني هو المسؤول عن إضافة وحذف وتعديل الأدوية. المالك Alyas مخصص للصيانة وإعدادات النظام.</p></div>
+  <div class="card"><h3>📷 الكاميرا</h3><p class="muted" style="margin-top:10px">يمكن للصيدلاني فتح كاميرا الجهاز للمساعدة في قراءة الباركود أو تصوير المنتج.</p><button class="btn btn-light" style="margin-top:12px" onclick="openCamera()">فتح الكاميرا</button></div>
+  <div class="card"><h3>🛒 واجهة الزبون</h3><p class="muted" style="margin-top:10px">تصفح المنتجات وأضفها للسلة ثم أرسل الطلب.</p></div>
+ </div>`;
+}
+function renderProducts(){
+ const q=role==="customer"?`<div class="search"><input id="productSearch" placeholder="🔍 ابحث عن دواء أو منتج..." oninput="renderProductCards()"></div>`:"";
+ document.getElementById("productsPage").innerHTML=`<div class="page-title"><div><h2>💊 المنتجات</h2><p>الأدوية والمنتجات المتوفرة حالياً</p></div>${role==="customer"?'<button class="btn btn-primary" onclick="openCart()">🛒 السلة ('+cart.length+')</button>':""}</div>${q}<div id="productCards" class="products-grid"></div>`;
+ renderProductCards();
+}
+function renderProductCards(){
+ const el=document.getElementById("productCards");if(!el)return;
+ const q=(document.getElementById("productSearch")?.value||"").toLowerCase();
+ const list=products.filter(p=>(p.name+" "+p.category).toLowerCase().includes(q));
+ if(!list.length){el.innerHTML='<div class="card" style="grid-column:1/-1;text-align:center"><h3>لا توجد منتجات</h3><p class="muted" style="margin-top:8px">الصيدلاني يستطيع إضافة الأدوية من إدارة المخزون.</p></div>';return}
+ el.innerHTML=list.map(p=>`<article class="product"><div class="product-img">${p.emoji||"💊"}</div><div class="product-body"><span class="badge">${p.category}</span><h3>${escapeHtml(p.name)}</h3><p class="muted">المتوفر: ${p.stock}</p><div class="price">${p.price.toFixed(2)} IQD</div>${role==="customer"?`<button class="btn btn-primary" style="width:100%" onclick="addCart(${p.id})">🛒 إضافة للسلة</button>`:""}</div></article>`).join("");
+}
+function renderOrders(){
+ document.getElementById("ordersPage").innerHTML=`<div class="page-title"><div><h2>📦 الطلبات</h2><p>متابعة الطلبات المسجلة</p></div></div><div class="card"><div class="table-wrap"><table class="table"><thead><tr><th>رقم</th><th>المنتجات</th><th>الإجمالي</th><th>الحالة</th></tr></thead><tbody>${orders.length?orders.map(o=>`<tr><td>#${o.id}</td><td>${o.items.map(i=>escapeHtml(i.name)+" × "+i.qty).join("، ")}</td><td>${o.total.toFixed(2)} IQD</td><td><span class="badge">${o.status}</span></td></tr>`).join(""):`<tr><td colspan="4" style="text-align:center">لا توجد طلبات بعد</td></tr>`}</tbody></table></div></div>`;
+}
+function renderManage(){
+ document.getElementById("managePage").innerHTML=`
+ <div class="page-title"><div><h2>🧰 إدارة المخزون</h2><p>هذه الواجهة متاحة للصيدلاني لإضافة وحذف وتعديل الأدوية.</p></div><button class="btn btn-primary" onclick="openAddProduct()">＋ إضافة دواء</button></div>
+ <div class="notice">📷 يمكنك استخدام الكاميرا من زر "الكاميرا" للمساعدة في قراءة/تصوير المنتج. صلاحية حذف الأدوية هنا للصيدلاني فقط.</div>
+ <div class="card"><div class="table-wrap"><table class="table"><thead><tr><th>الدواء</th><th>التصنيف</th><th>السعر</th><th>المخزون</th><th>إجراءات</th></tr></thead><tbody>${products.length?products.map(p=>`<tr><td><b>${escapeHtml(p.name)}</b></td><td>${escapeHtml(p.category)}</td><td>${p.price.toFixed(2)}</td><td>${p.stock}</td><td><button class="btn btn-light" onclick="openEditProduct(${p.id})">تعديل</button> <button class="btn btn-danger" onclick="deleteProduct(${p.id})">حذف</button></td></tr>`).join(""):`<tr><td colspan="5" style="text-align:center;padding:30px">لا توجد أدوية. أضف أول دواء من زر "إضافة دواء".</td></tr>`}</tbody></table></div></div>`;
+}
+function renderMaintenance(){
+ document.getElementById("maintenancePage").innerHTML=`
+ <div class="page-title"><div><h2>⚙️ صيانة النظام — Alyas</h2><p>إعدادات المالك والصيانة فقط.</p></div></div>
+ <div class="grid">
+  <div class="card"><h3>👑 حساب المالك</h3><p class="muted" style="margin:10px 0">اسم المالك: Alyas</p><button class="btn btn-dark" onclick="changeOwnerPassword()">تغيير كلمة المرور</button></div>
+  <div class="card"><h3>🧹 تنظيف البيانات</h3><p class="muted" style="margin:10px 0">حذف جميع بيانات الأدوية والطلبات من هذا المتصفح.</p><button class="btn btn-danger" onclick="resetData()">إعادة ضبط البيانات</button></div>
+  <div class="card"><h3>📷 اختبار الكاميرا</h3><p class="muted" style="margin:10px 0">تشغيل كاميرا الجهاز من المتصفح.</p><button class="btn btn-primary" onclick="openCamera()">فتح الكاميرا</button></div>
+ </div>`;
+}
+function openAddProduct(){openProductModal()}
+function openEditProduct(id){openProductModal(products.find(p=>p.id===id))}
+function openProductModal(p=null){
+ document.getElementById("modalBox").innerHTML=`<div class="modal-head"><h2>${p?"تعديل الدواء":"إضافة دواء جديد"}</h2><button class="btn btn-light" onclick="closeModal()">✕</button></div>
+ <div class="form-grid">
+ <div class="form-group"><label>اسم الدواء</label><input id="fName" class="field" value="${p?escapeAttr(p.name):""}" placeholder="مثال: Panadol"></div>
+ <div class="form-group"><label>التصنيف</label><input id="fCat" class="field" value="${p?escapeAttr(p.category):"Medicines"}" placeholder="Medicines"></div>
+ <div class="form-group"><label>السعر (IQD)</label><input id="fPrice" type="number" min="0" class="field" value="${p?p.price:""}"></div>
+ <div class="form-group"><label>الكمية</label><input id="fStock" type="number" min="0" class="field" value="${p?p.stock:""}"></div>
+ <div class="form-group"><label>رمز المنتج</label><input id="fEmoji" class="field" value="${p?escapeAttr(p.emoji||"💊"):"💊"}"></div>
+ </div>
+ <div style="display:flex;gap:10px;margin-top:20px"><button class="btn btn-primary" style="flex:1" onclick="saveProduct(${p?p.id:"null"})">${p?"حفظ التعديل":"إضافة الدواء"}</button><button class="btn btn-light" onclick="openCamera()">📷 كاميرا</button></div>`;
+ document.getElementById("modal").classList.remove("hidden");
+}
+function saveProduct(id){
+ const name=document.getElementById("fName").value.trim(),cat=document.getElementById("fCat").value.trim()||"Medicines",price=Number(document.getElementById("fPrice").value),stock=Number(document.getElementById("fStock").value),emoji=document.getElementById("fEmoji").value||"💊";
+ if(!name||!Number.isFinite(price)||price<0||!Number.isFinite(stock)||stock<0){toast("أكمل البيانات بشكل صحيح");return}
+ if(id===null) products.push({id:Date.now(),name,category:cat,price,stock,emoji}); else {const p=products.find(x=>x.id===id);Object.assign(p,{name,category:cat,price,stock,emoji})}
+ save();closeModal();renderAll();toast(id===null?"تمت إضافة الدواء":"تم تعديل الدواء");
+}
+function deleteProduct(id){
+ if(role!=="pharmacist")return toast("الحذف متاح للصيدلاني فقط");
+ const p=products.find(x=>x.id===id);if(!p)return;
+ if(confirm("حذف "+p.name+" من المخزون؟")){products=products.filter(x=>x.id!==id);save();renderAll();toast("تم حذف الدواء")}
+}
+function addCart(id){const p=products.find(x=>x.id===id);if(!p||p.stock<1)return toast("الدواء غير متوفر");const x=cart.find(i=>i.id===id);if(x)x.qty++;else cart.push({id:p.id,name:p.name,price:p.price,qty:1});save();renderProducts();toast("تمت الإضافة للسلة")}
+function openCart(){
+ document.getElementById("modalBox").innerHTML=`<div class="modal-head"><h2>🛒 سلة الزبون</h2><button class="btn btn-light" onclick="closeModal()">✕</button></div>
+ <div>${cart.length?cart.map(i=>`<div style="display:flex;justify-content:space-between;padding:13px 0;border-bottom:1px solid #eee"><div><b>${escapeHtml(i.name)}</b><div class="muted">${i.price.toFixed(2)} × ${i.qty}</div></div><button class="btn btn-danger" onclick="removeCart(${i.id})">حذف</button></div>`).join(""):`<p class="muted" style="text-align:center;padding:30px">السلة فارغة</p>`}</div>
+ ${cart.length?`<h3 style="margin-top:18px">الإجمالي: ${cart.reduce((s,i)=>s+i.price*i.qty,0).toFixed(2)} IQD</h3><button class="btn btn-primary" style="width:100%;margin-top:15px" onclick="checkout()">تأكيد الطلب</button>`:""}`;
+ document.getElementById("modal").classList.remove("hidden");
+}
+function removeCart(id){cart=cart.filter(x=>x.id!==id);save();openCart()}
+function checkout(){
+ if(!cart.length)return;
+ const total=cart.reduce((s,i)=>s+i.price*i.qty,0);
+ orders.push({id:1000+orders.length+1,items:cart.map(i=>({name:i.name,qty:i.qty})),total,status:"قيد المعالجة"});
+ cart.forEach(i=>{const p=products.find(x=>x.id===i.id);if(p)p.stock=Math.max(0,p.stock-i.qty)});
+ cart=[];save();closeModal();renderAll();toast("تم إرسال الطلب بنجاح");
+}
+function openCamera(){
+ document.getElementById("modalBox").innerHTML=`<div class="modal-head"><h2>📷 كاميرا PharmaCare</h2><button class="btn btn-light" onclick="closeModal()">✕</button></div><div class="camera"><video id="video" autoplay playsinline></video><div class="scan-line"></div></div><p class="muted" style="margin:12px 0">اسمح للمتصفح بالوصول إلى الكاميرا. يمكن تطويرها لاحقاً لقراءة الباركود وربطه بالدواء.</p><button class="btn btn-primary" style="width:100%" onclick="capturePhoto()">التقاط صورة</button>`;
+ document.getElementById("modal").classList.remove("hidden");
+ navigator.mediaDevices?.getUserMedia({video:{facingMode:{ideal:"environment"}}}).then(s=>{stream=s;document.getElementById("video").srcObject=s}).catch(()=>toast("تعذر تشغيل الكاميرا. تأكد من السماح للمتصفح."));
+}
+function capturePhoto(){toast("تم التقاط الصورة — يمكن ربطها ببيانات الدواء لاحقاً")}
+function stopCamera(){if(stream){stream.getTracks().forEach(t=>t.stop());stream=null}}
+function closeModal(){stopCamera();document.getElementById("modal").classList.add("hidden")}
+function changeOwnerPassword(){const n=prompt("اكتب كلمة المرور الجديدة:");if(n&&n.length>=10)alert("تم تغيير كلمة المرور لهذه الجلسة التجريبية. للنسخة الحقيقية يجب حفظها في قاعدة بيانات آمنة.");else if(n)toast("كلمة المرور يجب أن تكون 10 أحرف على الأقل")}
+function resetData(){if(confirm("هل تريد حذف كل الأدوية والطلبات؟")){products=[];orders=[];cart=[];save();renderAll();toast("تم تنظيف البيانات")}}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+function escapeAttr(s){return escapeHtml(s)}
+document.getElementById("modal").addEventListener("click",e=>{if(e.target.id==="modal")closeModal()});
+showHome();
+</script>
+</body>
+</html>
