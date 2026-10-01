@@ -2355,6 +2355,7 @@ async function saveCompany(companyId=""){
                 await window.supabaseClient
                     .from("companies")
                     .insert({
+                        id: crypto.randomUUID(),
                         name:name,
                         code:code,
                         phone:phone || null,
